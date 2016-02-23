@@ -5,7 +5,7 @@
         jar="C:\programs\birdflygame\core\build\libs\core-1.0.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="aaa63db54b76a488ab0e3d863005477a4a28b467">
+        sha1="7ffdbadf5c16affbdfc6b7cb446b3324a4d58965">
         <dex dex="C:\programs\birdflygame\android\build\intermediates\pre-dexed\debug\core-1.0_913df076560582bae36761eb11e0ba332b7be303.jar" />
     </item>
 

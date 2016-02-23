@@ -22,9 +22,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.scenes.scene2d.Group;
-
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 public class GameScreen implements Screen {
 
     final BirdFlyGame game;
@@ -38,8 +37,8 @@ public class GameScreen implements Screen {
     Image RightScrollPlaneImage;
     Image BirdImage;
     Image SprigImage;
-    ScrollPane LeftScrollPane;
-    ScrollPane RightScrollPane;
+//    ScrollPane LeftScrollPane;
+//    ScrollPane RightScrollPane;
 
     float SpeedToDown; // это скорость, с которой объекты перемещаются вниз!
     float LeftFlatMoveCounter; // счетчик движения слева!
@@ -54,12 +53,10 @@ public class GameScreen implements Screen {
 
     int FlightZoneHeight; // высота, до которой птичка птичка будет летать!
     int FlightZoneWidth; //  ширина видимой зоны, до которой птичка будет летать!
-    Group group;
     public GameScreen(final BirdFlyGame gam)
     {
         // устанавливаем игру
         this.game = gam;
-        group = new Group();
         // устанавливаем скроллпаны!
 //        LeftScrollPane = new ScrollPane(LeftScrollPlaneImage);
 //        RightScrollPane = new ScrollPane(RightScrollPlaneImage);
@@ -79,24 +76,58 @@ public class GameScreen implements Screen {
         SprigTexture = new TextureRegion(GameElementsTexture, 85 + 85 + 85, 0, 184, 45);
 
         LeftScrollPlaneImage = new Image(InputManagePlaneTexture);
+        LeftScrollPlaneImage.addListener(new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
+                return true;
+            }
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("Example", "touch done at (" + x + ", " + y + ")");
+            }
+            public void touchDragged(InputEvent event,
+                                     float x,
+                                     float y,
+                                     int pointer)
+            {
+                Gdx.app.log("From LeftScrollPlaneImage", "x: " + x + ", y: " + y);
+            }
+        });
         RightScrollPlaneImage = new Image(InputManagePlaneTexture);
+        RightScrollPlaneImage.addListener(new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
+                return true;
+            }
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("Example", "touch done at (" + x + ", " + y + ")");
+            }
+            public void touchDragged(InputEvent event,
+                                     float x,
+                                     float y,
+                                     int pointer)
+            {
+                Gdx.app.log("From RightScrollPlaneImage", "x: " + x + ", y: " + y);
+            }
+        });
+        BirdImage = new Image(BirdTexture);
         BirdImage = new Image(BirdTexture);
         SprigImage = new Image(SprigTexture);
 
-        LeftScrollPane = new ScrollPane(LeftScrollPlaneImage);
-        RightScrollPane = new ScrollPane(RightScrollPlaneImage);
+//        LeftScrollPane = new ScrollPane(LeftScrollPlaneImage);
+// RightScrollPane = new ScrollPane(RightScrollPlaneImage);
 
-        LeftScrollPane.setPosition(0, 0);
-        RightScrollPane.setPosition(game.VIEW_WIDTH - RightScrollPlaneImage.getWidth(), 0);
+        LeftScrollPlaneImage.setPosition(0, 0);
+        RightScrollPlaneImage.setPosition(game.VIEW_WIDTH - RightScrollPlaneImage.getWidth(), 0);
         BirdImage.setPosition(200, 100);
 
         SprigImage.setPosition(game.VIEW_WIDTH - SprigImage.getWidth(), game.VIEW_HEIGHT - SprigImage.getHeight());
 
-        group.addActor(BirdImage);
-        group.addActor(SprigImage);
-        group.addActor(LeftScrollPane);
-        group.addActor(RightScrollPane);
-        stage.addActor(group);
+        stage.addActor(BirdImage);
+        stage.addActor(SprigImage);
+        stage.addActor(LeftScrollPlaneImage);
+        stage.addActor(RightScrollPlaneImage);
+        Gdx.input.setInputProcessor(stage);
+        stage.getViewport().apply();
     }
 
     public void render(float delta)

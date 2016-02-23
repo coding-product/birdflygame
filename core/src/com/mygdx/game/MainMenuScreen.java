@@ -40,6 +40,9 @@ public class MainMenuScreen implements Screen {
         HelloLabel.setHeight(80);
         HelloLabel.setWidth(200);
         stage.addActor(HelloLabel);
+        Gdx.input.setInputProcessor(stage);
+        stage.getViewport().apply();
+
     }
 
     public void render(float delta)
