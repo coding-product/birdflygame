@@ -15,6 +15,12 @@ public class PlaneDragInputListener extends InputListener{
     // приращение при последнем
     private Vector2 LastMove;
 
+    public PlaneDragInputListener()
+    {
+        this.MoveCounter = new Vector2(0f, 0f);
+        this.LastMove = new Vector2(0f, 0f);
+    }
+
     public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
         Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
 
@@ -36,7 +42,6 @@ public class PlaneDragInputListener extends InputListener{
         LastMove.x = x;
         LastMove.y = y;
 
-        Gdx.app.log("From LeftScrollPlaneImage", "x: " + x + ", y: " + y);
     }
 
     public float getMoveCounterX()
@@ -48,4 +53,9 @@ public class PlaneDragInputListener extends InputListener{
         return this.MoveCounter.y;
     }
 
+    public void clearMoveCounter()
+    {
+        this.MoveCounter.y = 0;
+        this.MoveCounter.x = 0;
+    }
 }
