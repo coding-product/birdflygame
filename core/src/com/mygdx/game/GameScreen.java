@@ -118,6 +118,8 @@ public class GameScreen implements Screen {
                     "Left: " + this.LeftDragInputListener.getMoveCounterY() +
                             "Right: " + this.RightDragInputListener.getMoveCounterY()
             );
+            this.BirdImage.rotateBy(1f);
+            Gdx.app.log("BirdImage Rotagion:", "angle: "+BirdImage.getRotation());
             this.LeftDragInputListener.clearMoveCounter();
             this.RightDragInputListener.clearMoveCounter();
             this.CurrentTimer = 0;
