@@ -6,15 +6,12 @@ package com.mygdx.game;
 
 import java.util.Iterator;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,8 +19,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.math.Vector2;
+
 public class GameScreen implements Screen {
 
     final BirdFlyGame game;
@@ -39,28 +36,44 @@ public class GameScreen implements Screen {
     Image SprigImage;
 
     float SpeedToDown; // это скорость, с которой объекты перемещаются вниз!
-
+    float SpeedToUp;
     PlaneDragInputListener LeftDragInputListener;
     PlaneDragInputListener RightDragInputListener;
 
-    float TimeToControlFlying; // время проверки параметров полета
-                               // проверяет - сколько пользователь наводил пальцем по поверхностям
-                              // если недостаточно - опускаемся...
     float AverageMovingCount; // с этим параметром будет сравниваться количество движения справа
                               // и слева!
+    // этот вектор служит направлением движения птицы!
+    Vector2 CurrentMovingVector;
+
     int FlightZoneHeight; // высота, до которой птичка птичка будет летать!
     int FlightZoneWidth; //  ширина видимой зоны, до которой птичка будет летать!
+    // показывает сколько времени уже прошло
+    // с последнего сеанса проверки полета!
 
-    float CurrentTimer;
+    float CurrentFlyingTimer;
+    float TimeToControlFlying; // время проверки параметров полета
+    // проверяет - сколько пользователь наводил пальцем по поверхностям
+    // если недостаточно - опускаемся...
+
+    float CurrentDownMoveTimer;
+    float TimeToDownMove;
+
     public GameScreen(final BirdFlyGame gam)
     {
         // устанавливаем игру
         this.game = gam;
 
         // каждые 0.2 секунды проверяем, сколько человек сделал движений!
-        this.TimeToControlFlying = 0.2f;
-        this.CurrentTimer = 0.0f;
-        this.AverageMovingCount = 600;
+        this.TimeToControlFlying = 0.1f;
+        this.CurrentFlyingTimer = 0.0f;
+        this.AverageMovingCount = 80f;
+        this.CurrentMovingVector = new Vector2(0f, 0f);
+
+        this.CurrentDownMoveTimer = 0.0f;
+        this.TimeToDownMove = 0.08f;
+
+        this.SpeedToDown = 5f;
+        this.SpeedToUp = 4f;
 
         // подниматься будем до 2/3 экрана, дальше - прокрутка других актеров вниз!
         this.FlightZoneHeight = 2/3 * game.VIEW_HEIGHT;
@@ -89,9 +102,11 @@ public class GameScreen implements Screen {
 
         this.LeftScrollPlaneImage.setPosition(0, 0);
         this.RightScrollPlaneImage.setPosition(game.VIEW_WIDTH - RightScrollPlaneImage.getWidth(), 0);
-        this.BirdImage.setPosition(200, 100);
+        // установка птицы по центру экрана!
+        this.BirdImage.setPosition(game.VIEW_WIDTH/2 - this.BirdImage.getWidth()/2,
+                                    game.VIEW_HEIGHT / 2 - this.BirdImage.getHeight() / 2);
 
-        this.SprigImage.setPosition(game.VIEW_WIDTH - SprigImage.getWidth(), game.VIEW_HEIGHT - SprigImage.getHeight());
+        this.SprigImage.setPosition(RightScrollPlaneImage.getX() - SprigImage.getWidth(), game.VIEW_HEIGHT - SprigImage.getHeight());
 
         this.stage.addActor(BirdImage);
         this.stage.addActor(SprigImage);
@@ -103,27 +118,35 @@ public class GameScreen implements Screen {
 
     public void render(float delta)
     {
+        float lY = this.LeftDragInputListener.getMoveCounterY(),
+              rY = this.RightDragInputListener.getMoveCounterY(),
+              dY = -(rY - lY);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if(Gdx.input.isCatchBackKey())
         {
             this.game.setScreen(this.game.ThisMainMenuScreen);
         }
-        this.CurrentTimer += delta;
-        if(this.CurrentTimer >= this.TimeToControlFlying)
+
+        this.CurrentFlyingTimer += delta;
+        this.CurrentDownMoveTimer += delta;
+
+        if(this.CurrentFlyingTimer >= this.TimeToControlFlying)
         {
-            this.LeftDragInputListener.getMoveCounterY();
-            this.RightDragInputListener.getMoveCounterY();
             Gdx.app.log("Main Process worker",
                     "Left: " + this.LeftDragInputListener.getMoveCounterY() +
                             "Right: " + this.RightDragInputListener.getMoveCounterY()
             );
-            this.BirdImage.rotateBy(1f);
-            Gdx.app.log("BirdImage Rotagion:", "angle: "+BirdImage.getRotation());
+            this.CurrentMovingVector.set(dY/ this.AverageMovingCount * this.SpeedToUp,
+                                    (rY + lY - Math.abs(dY)) / 2 /this.AverageMovingCount * this.SpeedToUp);
+
             this.LeftDragInputListener.clearMoveCounter();
             this.RightDragInputListener.clearMoveCounter();
-            this.CurrentTimer = 0;
+            this.CurrentFlyingTimer -= this.TimeToControlFlying;
+            this.BirdImage.moveBy(this.CurrentMovingVector.x, (-this.SpeedToDown) + this.CurrentMovingVector.y);
+
         }
+
         stage.draw();
     }
     public void show()
