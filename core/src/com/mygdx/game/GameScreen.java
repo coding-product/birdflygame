@@ -20,20 +20,27 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.Input;
 
 public class GameScreen implements Screen {
 
     final BirdFlyGame game;
     Stage stage;
     Texture GameElementsTexture;
+    Texture GameBackTexture;
     TextureRegion InputManagePlaneTexture; // текстура 85x600
     TextureRegion BirdTexture; // текстра птица 85x80
     TextureRegion BirdFlyingTexture; // текстура летающего птица 85x80
     TextureRegion SprigTexture; // текстура ветки 184x45
+    TextureRegion CloudTexture; // текстура облака! 177x80
+    TextureRegion BackTexture;
+
     Image LeftScrollPlaneImage;
     Image RightScrollPlaneImage;
     Image BirdImage;
     Image SprigImage;
+    Image CloudImage;
+    Image BackImage;
 
     float SpeedToDown; // это скорость, с которой объекты перемещаются вниз!
     float SpeedToUp;
@@ -84,10 +91,13 @@ public class GameScreen implements Screen {
         this.stage.getViewport().setScreenSize(game.VIEW_WIDTH, game.VIEW_HEIGHT);
         // грузим текстуры
         GameElementsTexture = new Texture(Gdx.files.internal("game_textures.png"));
+        GameBackTexture = new Texture(Gdx.files.internal("game_back.png"));
         InputManagePlaneTexture = new TextureRegion(GameElementsTexture, 0, 0, 85, 600);
-        BirdTexture = new TextureRegion(GameElementsTexture, 85, 0, 85, 80);
+        BirdTexture = new TextureRegion(GameElementsTexture, 82, 0, 82, 80);
         BirdFlyingTexture = new TextureRegion(GameElementsTexture, 85 + 85, 0, 85, 80);
         SprigTexture = new TextureRegion(GameElementsTexture, 85 + 85 + 85, 0, 184, 45);
+        CloudTexture = new TextureRegion(GameElementsTexture, 85 + 85 + 85 + 184, 0, 177, 88);
+        BackTexture = new TextureRegion(GameBackTexture, 0, 0, game.VIEW_WIDTH, game.VIEW_HEIGHT);
 
         this.LeftDragInputListener = new PlaneDragInputListener();
         this.RightDragInputListener = new PlaneDragInputListener();
@@ -97,8 +107,9 @@ public class GameScreen implements Screen {
         this.RightScrollPlaneImage = new Image(InputManagePlaneTexture);
         this.RightScrollPlaneImage.addListener(RightDragInputListener);
         this.BirdImage = new Image(BirdTexture);
-        this.BirdImage = new Image(BirdTexture);
         this.SprigImage = new Image(SprigTexture);
+        this.CloudImage = new Image(CloudTexture);
+        this.BackImage = new Image(BackTexture);
 
         this.LeftScrollPlaneImage.setPosition(0, 0);
         this.RightScrollPlaneImage.setPosition(game.VIEW_WIDTH - RightScrollPlaneImage.getWidth(), 0);
@@ -107,29 +118,39 @@ public class GameScreen implements Screen {
                                     game.VIEW_HEIGHT / 2 - this.BirdImage.getHeight() / 2);
 
         this.SprigImage.setPosition(RightScrollPlaneImage.getX() - SprigImage.getWidth(), game.VIEW_HEIGHT - SprigImage.getHeight());
+        this.CloudImage.setPosition(600, 100);
+        this.BackImage.setPosition(0, 0);
 
-        this.stage.addActor(BirdImage);
+        this.stage.addActor(BackImage);
+        this.stage.addActor(CloudImage);
         this.stage.addActor(SprigImage);
+        this.stage.addActor(BirdImage);
         this.stage.addActor(LeftScrollPlaneImage);
         this.stage.addActor(RightScrollPlaneImage);
-        Gdx.input.setInputProcessor(stage);
-        this.stage.getViewport().apply();
+
     }
 
     public void render(float delta)
     {
-        float lY = this.LeftDragInputListener.getMoveCounterY(),
-              rY = this.RightDragInputListener.getMoveCounterY(),
-              dY = -(rY - lY);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(Gdx.input.isCatchBackKey())
-        {
+        if (Gdx.input.isKeyPressed(Input.Keys.BACK)){
             this.game.setScreen(this.game.ThisMainMenuScreen);
         }
 
         this.CurrentFlyingTimer += delta;
         this.CurrentDownMoveTimer += delta;
+
+        this.flyingControl();
+
+        stage.draw();
+    }
+
+    public void flyingControl()
+    {
+        float lY = this.LeftDragInputListener.getMoveCounterY(),
+                rY = this.RightDragInputListener.getMoveCounterY(),
+                dY = -(rY - lY);
 
         if(this.CurrentFlyingTimer >= this.TimeToControlFlying)
         {
@@ -138,7 +159,7 @@ public class GameScreen implements Screen {
                             "Right: " + this.RightDragInputListener.getMoveCounterY()
             );
             this.CurrentMovingVector.set(dY/ this.AverageMovingCount * this.SpeedToUp,
-                                    (rY + lY - Math.abs(dY)) / 2 /this.AverageMovingCount * this.SpeedToUp);
+                    (rY + lY - Math.abs(dY)) * 3 / 4 /this.AverageMovingCount * this.SpeedToUp);
 
             this.LeftDragInputListener.clearMoveCounter();
             this.RightDragInputListener.clearMoveCounter();
@@ -147,8 +168,13 @@ public class GameScreen implements Screen {
 
         }
 
-        stage.draw();
     }
+
+    public void intersectionControl()
+    {
+
+    }
+
     public void show()
     {
             Gdx.input.setInputProcessor(stage);
@@ -158,12 +184,16 @@ public class GameScreen implements Screen {
     {
         stage.getViewport().update(width, height);
     }
-    public void resume(){}
+    public void resume()
+    {
+
+    }
     public void pause(){}
     public void hide(){}
     public void dispose()
     {
         GameElementsTexture.dispose();
     }
+
 
 }

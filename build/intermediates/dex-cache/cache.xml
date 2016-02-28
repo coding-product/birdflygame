@@ -5,8 +5,29 @@
         jar="C:\programs\birdflygame\core\build\libs\core-1.0.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="16872ecc7d7876ffc21eb92e2ea1c6455cfb2347">
-        <dex dex="C:\programs\birdflygame\android\build\intermediates\pre-dexed\debug\core-1.0_913df076560582bae36761eb11e0ba332b7be303.jar" />
+        sha1="6310e056bb36cd5083df1608685c3e50a3c3b6f1">
+        <dex dex="C:\programs\birdflygame\android\build\intermediates\pre-dexed\release\core-1.0_913df076560582bae36761eb11e0ba332b7be303.jar" />
+    </item>
+    <item
+        jar="C:\Users\cash\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-box2d\1.8.0\a87cfc0621180fd6976238366541d6211f9e18a4\gdx-box2d-1.8.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a87cfc0621180fd6976238366541d6211f9e18a4">
+        <dex dex="C:\programs\birdflygame\android\build\intermediates\pre-dexed\release\gdx-box2d-1.8.0_426513a4741cecc65e7d3546e6710c63d7fd7728.jar" />
+    </item>
+    <item
+        jar="C:\Users\cash\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx\1.8.0\8aaf0d40f211e94051538d28b06996a6cc5ed2af\gdx-1.8.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8aaf0d40f211e94051538d28b06996a6cc5ed2af">
+        <dex dex="C:\programs\birdflygame\android\build\intermediates\pre-dexed\release\gdx-1.8.0_c76100337a9511de3d2c6bbf36c637445483a99d.jar" />
+    </item>
+    <item
+        jar="C:\Users\cash\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-backend-android\1.8.0\33979d6d61ea91a3a758717cbc6acf38fbb6aae2\gdx-backend-android-1.8.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="33979d6d61ea91a3a758717cbc6acf38fbb6aae2">
+        <dex dex="C:\programs\birdflygame\android\build\intermediates\pre-dexed\release\gdx-backend-android-1.8.0_a4c3e806e864baf4a79aa17fdc83dbd352245947.jar" />
     </item>
 
 </items>

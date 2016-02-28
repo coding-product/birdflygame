@@ -22,15 +22,12 @@ public class PlaneDragInputListener extends InputListener{
     }
 
     public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-        Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
-
         LastMove.x = x;
         LastMove.y = y;
 
         return true;
     }
     public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-        Gdx.app.log("Example", "touch done at (" + x + ", " + y + ")");
     }
     public void touchDragged(InputEvent event,
                              float x,

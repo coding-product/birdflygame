@@ -18,11 +18,12 @@ public class BirdFlyGame extends Game {
 	@Override
 	public void create ()
 	{
+
 		// игровой экран
 		ThisGameScreen = new GameScreen(this);
 		// экран меню с кнопками
 		ThisMainMenuScreen = new MainMenuScreen(this);
-
+		Gdx.input.setCatchBackKey(true);
 		this.setScreen(ThisMainMenuScreen);
 	}
 

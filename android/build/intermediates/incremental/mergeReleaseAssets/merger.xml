@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="C:\programs\birdflygame\android\assets"><file name="badlogic.jpg" path="C:\programs\birdflygame\android\assets\badlogic.jpg"/><file name="game_back.png" path="C:\programs\birdflygame\android\assets\game_back.png"/><file name="game_textures.png" path="C:\programs\birdflygame\android\assets\game_textures.png"/></source></dataSet><dataSet config="release"><source path="C:\programs\birdflygame\android\src\release\assets"/></dataSet></merger>
